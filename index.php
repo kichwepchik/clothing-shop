@@ -1,3 +1,64 @@
+<?php
+session_start();
+
+function logToFile($message) {
+    $logFile = 'debug.log';
+    if (is_writable($logFile)) {
+        $current = file_get_contents($logFile);
+        $current .= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . "\n";
+        file_put_contents($logFile, $current);
+    }
+}
+
+function redirectToError($message) {
+    logToFile("Redirecting to error: $message");
+    header("Location: error.php?message=" . urlencode($message));
+    exit;
+}
+
+if (isset($_GET['user_id'])) {
+    if (is_numeric($_GET['user_id'])) {
+        $_SESSION['user_id'] = $_GET['user_id'];
+    } else {
+        redirectToError("Invalid user ID.");
+    }
+} elseif (!isset($_SESSION['user_id'])) {
+    echo '<script type="text/javascript" src="https://telegram.org/js/telegram-web-app.js"></script>';
+    echo '<script type="text/javascript">
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+        const initData = Telegram.WebApp.initDataUnsafe;
+
+        if (initData.user && initData.user.id) {
+            const userId = initData.user.id;
+            const userName = initData.user.first_name;
+            const userPhotoUrl = initData.user.photo_url || "";
+
+            fetch("set_user_data.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "user_id=" + encodeURIComponent(userId) + "&user_name=" + encodeURIComponent(userName) + "&user_photo_url=" + encodeURIComponent(userPhotoUrl)
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    fetch("set_user_data.php?log=" + encodeURIComponent("Failed to set user data."));
+                    window.location.href = "error.php?message=" + encodeURIComponent("Failed to set user data.");
+                }
+            }).catch(error => {
+                fetch("set_user_data.php?log=" + encodeURIComponent("Error: " + error.message));
+                window.location.href = "error.php?message=" + encodeURIComponent("Error: " + error.message);
+            });
+        } else {
+            fetch("set_user_data.php?log=" + encodeURIComponent("User data not available from Telegram Web App."));
+            window.location.href = "error.php?message=" + encodeURIComponent("User data not available from Telegram Web App.");
+        }
+    </script>';
+}
+?>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
