@@ -1,0 +1,423 @@
+/* styles.css */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    background: url('../img/background.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+header {
+    width: 100%;
+    padding-bottom: 20px;
+    text-align: center;
+    border-bottom: 3px solid #FF0000;
+    position: relative;
+    font-weight: 400;
+}
+
+.logo {
+    padding-top: 20px;
+    width: 70px;
+}
+
+
+.menu-icon {
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    background-color: #000000;
+    position: fixed;
+    top: 0;
+    right: -250px;
+    width: 200px;
+    height: 100%;
+    border-left: 2px solid #FF0000;
+    transition: right 0.5s ease;
+    z-index: 1000;
+}
+
+.menu a {
+    padding: 22px;
+    font-weight: 700;
+    color: #FFFFFF;
+    text-decoration: none;
+    border-bottom: 2px solid #FF0000;
+}
+
+.menu a:last-child {
+    border-bottom: none;
+}
+
+.menu.open {
+    right: 0;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.overlay.open {
+    display: block;
+}
+
+.container {
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 300;
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-weight: 100;
+    font-style: normal;
+}
+
+p {
+    font-size: 23px;
+    font-weight: 100;
+    font-style: normal;
+}
+
+.category-button {
+    display: block;
+    width: 100%;
+    max-width: 330px;
+    margin: 10px auto;
+    color: #FFFFFF;
+    text-decoration: none;
+    border-radius: 20px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-align: center;
+    overflow: hidden; /* добавлено для обрезки фонового изображения по краям */
+    background-size: cover; /* изображение покрывает весь блок */
+    background-position: center; /* центрирование изображения */
+}
+
+.category-button p {
+    background-color: rgba(51, 51, 51, 0.86);
+    font-size: 18px;
+    border-radius: 20px;
+    font-weight: 700;
+    display: inline-block;
+    padding: 5px;
+}
+
+#button-card1 {
+    background-image: url('../img/button-card1.png');
+}
+
+#button-card2 {
+    background-image: url('../img/button-card2.png');
+}
+
+.category-button:hover {
+    background-color: #D00000;
+    transform: scale(1.05);
+}
+
+.profile{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: rgba(44, 43, 43, 0.78);
+    margin-left: 20px;
+    margin-right: 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    flex-direction: row-reverse;
+}
+
+.user-profile {
+    display: flex;
+    margin-left: 8px;
+    text-decoration: none;
+}
+
+
+.notification-icon-container {
+    position: relative;
+    display: flex;
+    gap: 20px;
+    font-size: 18px;
+    margin-right: 8px;
+
+}
+
+.notification-dot {
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: none; /* Скрыта по умолчанию */
+}
+
+.user-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.user-name {
+    margin-top: 5px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #FFFFFF;
+    text-align: left;
+    text-decoration: none;
+}
+
+.interesting-section {
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+.interesting-section .cards-container {
+    display: flex;
+    padding-bottom: 20px;
+    white-space: nowrap;
+    gap: 20px;
+    -ms-overflow-style: none;  /* для IE и Edge */
+    scrollbar-width: none;  /* для Firefox */
+}
+
+.interesting-section .cards-container::-webkit-scrollbar {
+    display: none;  /* для Chrome, Safari и Opera */
+}
+
+.card {
+    width: 160px;
+    height: 160px;
+    border-radius: 25px;
+    border: 5px solid #b65959;
+    box-shadow: 10px 10px 20px #a86767, -10px -10px 20px #d01b1b;
+    flex-shrink: 0;
+    text-align: left;
+    color: #000;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    position: relative; /* добавлено для позиционирования текста и стрелки */
+    overflow: hidden; /* добавлено для обрезки фонового изображения по краям */
+    background-size: cover; /* изображение покрывает весь блок */
+    background-position: center; /* центрирование изображения */
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card p {
+    margin: 0;
+    font-size: 18px;
+    position: absolute; /* добавлено для позиционирования */
+    bottom: 90px; /* отступ от нижнего края */
+    left: 10px; /* отступ слева */
+    z-index: 1; /* чтобы текст был над фоном */
+    color: rgba(255, 255, 255); /* полупрозрачный белый фон для текста */
+    padding: 5px; /* отступы внутри блока с текстом */
+    background-color: rgba(51, 51, 51, 0.71);
+    border-radius: 20px;
+}
+
+.arrow {
+    position: absolute; /* добавлено для позиционирования */
+    bottom: 10px; /* отступ от нижнего края */
+    left: 100px; /* отступ слева */
+    width: 30px;
+    height: 30px;
+    background-color: #000;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1; /* чтобы стрелка была над фоном */
+}
+
+.arrow span {
+    color: #fff;
+    font-size: 18px;
+}
+
+#card1 {
+    background-image: url('../img/card1.png');
+}
+#card2 {
+    background-image: url('../img/card2.png');
+}
+
+#card3 {
+    background-image: url('../img/card3.png');
+}
+
+.dropdown-menus {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 20px 0;
+    width: 100%;
+    max-width: 330px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin: 10px 0;
+    width: 100%;
+}
+
+.dropdown-button {
+    background-color: transparent;
+    color: #FFFFFF;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    padding-left: 5px;
+    font-weight: 700;
+}
+
+.dropdown-content {
+    display: none;
+    padding-left: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    background-color: transparent;
+}
+
+.dropdown-content a:hover {
+    background-color: #333333;
+}
+
+.dropdown-content.open {
+    display: block;
+    animation: slideDown 0.5s ease-in-out;
+}
+
+.dropdown-content p {
+    font-size: 14px;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 1;
+        transform: translate(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10%);
+    }
+}
+
+.dropdown-content.closing {
+    animation: slideUp 0.5s ease-in-out;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background-color: rgba(0, 0, 0, 0.9);
+    overflow-y: auto;
+    transition: transform 0.3s ease-in-out;
+    transform: translateY(100%);
+    z-index: 1000;
+}
+
+.modal.show {
+    display: block;
+    transform: translateY(0);
+}
+
+.modal-content {
+    margin-top: 10px;
+    position: relative;
+    padding: 30px 20px;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px; /* Пример размера шрифта */
+    white-space: pre-wrap; /* Сохранение переносов строк */
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #0d1988;
+    font-weight: bold;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+footer {
+    width: 100%;
+    text-align: center;
+    background-color: #000;
+    color: #fff;
+    position: relative;
+    bottom: 0;
+}
+
+.down {
+    font-size: 10px;
+}
+
+
+
+
