@@ -1,0 +1,317 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    background: url('../img/background.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+header {
+    width: 100%;
+    padding-bottom: 20px;
+    text-align: center;
+    border-bottom: 3px solid #FF0000;
+    position: relative;
+    font-weight: 400;
+}
+
+
+.back-icon {
+    position: absolute;
+    cursor: pointer;
+    top: 20px;
+    left: 10px;
+    font-size: 25px;
+}
+
+.menu-icon {
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    background-color: #000000;
+    position: fixed;
+    top: 0;
+    right: -250px;
+    width: 200px;
+    height: 100%;
+    border-left: 2px solid #FF0000;
+    transition: right 0.5s ease;
+    z-index: 1000;
+}
+
+.menu a {
+    padding: 22px;
+    font-weight: 700;
+    color: #FFFFFF;
+    text-decoration: none;
+    border-bottom: 2px solid #FF0000;
+}
+
+.menu a:last-child {
+    border-bottom: none;
+}
+
+.menu.open {
+    right: 0;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.overlay.open {
+    display: block;
+}
+
+
+.user-profile {
+    margin-top: 20px;
+    text-decoration: none; /* Убираем подчеркивание для всех ссылок внутри .user-profile */
+}
+
+.user-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+.user-name {
+    font-size: 22px;
+    font-weight: 700;
+    text-decoration: none; /* Убираем подчеркивание для имени пользователя */
+}
+
+.user-profile-link {
+    text-decoration: none; /* Убираем подчеркивание для ссылки .user-profile-link */
+}
+
+
+.container {
+
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 300;
+}
+
+.order-container {
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+}
+
+
+
+.orders, .order_history {
+    margin-top: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+.orders h2 {
+    margin-left: 15px;
+}
+
+
+.order-item {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    justify-content: space-between;
+    transition: transform 0.5s;
+}
+.order-item:hover {
+    transform: scale(1.1);
+
+}
+
+.order-item:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.order-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+}
+
+.order-info {
+    flex-grow: 1;
+    text-align: left;
+    margin-left: 10px;
+}
+
+.order-quantity {
+    background-color: #FF0000;
+    color: #FFFFFF;
+    padding: 20px 10px;
+    border-radius: 20px;
+    margin-left: 10px;
+}
+
+
+.cont-block {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+    gap: 10px;
+}
+
+#favorites, #cart {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 170px;
+    height: 170px;
+    cursor: pointer;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 10px;
+    transition: transform 0.5s;
+
+
+}
+
+#favorites:hover, #cart:hover {
+    transform: scale(1.2);
+
+}
+
+#favorites i, #cart i {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+#favorites p, #cart p {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    padding-top: 25%;
+}
+
+.fi-sr-heart {
+    color: red;
+
+}
+
+.fi-sr-shopping-cart {
+    color: #cbe317;
+}
+
+
+
+
+
+
+#personal-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* центрирование дочерних элементов по горизонтали */
+    font-weight: 300;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 22px; /* добавим немного внутреннего отступа */
+}
+
+#personal-info-form {
+    width: 100%; /* занимает всю ширину родительского блока */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* центрирование содержимого внутри формы */
+}
+
+.input-container {
+    width: 100%;
+
+}
+
+.input-container input {
+    margin: 10px 0;
+    width: 95%;
+    display: flex;
+    justify-content: center; /* Центрирование по горизонтали */
+    align-items: center; /* Центрирование по вертикали */
+    height: 50px; /* Высота контейнера для центрирования по вертикали */
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
+    font-size: 16px;
+    padding-left: 10px;
+}
+
+.input-container input::placeholder {
+    color: #aaa;
+    opacity: 1; /* Firefox */
+}
+
+.input-container input:focus::placeholder {
+    opacity: 0;
+}
+
+#save-button {
+    width: 70%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background-color: #FF0000;
+    color: #FFFFFF;
+    cursor: pointer;
+    margin: 10px 0;
+    transition: transform 0.3s, background-color 0.3s;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#save-button:hover {
+    transform: scale(1.1);
+    background-color: #00FF00;
+}
+
+
+.support {
+    background-color: #808080;
+    padding: 20px;
+    width: 100%;
+    margin: 20px 0 0 0;
+    text-align: center;
+    cursor: pointer;
+}
+
+.support h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.support p {
+    margin: 10px 0 0;
+    font-size: 16px;
+}
+
+

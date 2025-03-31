@@ -116,3 +116,137 @@ function getOrders($pdo, $userId, $status = 'active') {
 $activeOrders = getOrders($pdo, $userId, 'active');
 $orderHistory = getOrders($pdo, $userId, 'history');
 ?>
+
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High Score - Спортивная атрибутика</title>
+    <link rel="stylesheet" href="static/styles/styles_for_profile.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.4.2/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+</head>
+<body>
+<header>
+    <div class="user-profile">
+        <?php if (isset($_SESSION['user_name']) && isset($_SESSION['user_photo_url'])): ?>
+            <a href="index.php" class="user-profile-link">
+                <img src="<?= htmlspecialchars($_SESSION['user_photo_url']) ?>" alt="User Photo" class="user-photo">
+                <div class="user-name"><?= htmlspecialchars($_SESSION['user_name']) ?></div>
+            </a>
+        <?php endif; ?>
+    </div>
+
+</header>
+
+<div class="container">
+    <div class="orders" id="orders">
+        <h2>Активные заказы</h2>
+        <?php if (count($activeOrders) > 0): ?>
+            <?php
+            $currentOrderId = null;
+            foreach ($activeOrders as $order):
+                if ($currentOrderId !== $order['order_id']):
+                    if ($currentOrderId !== null):
+                        echo '</div>';
+                    endif;
+                    $currentOrderId = $order['order_id'];
+                    echo '<div class="order-container">';
+                    echo '<h3 class="text-order">Заказ №' . htmlspecialchars($order['order_id']) . '</h3>';
+                endif; ?>
+                <div class="order-item" onclick="window.location.href='order_details.php?id=<?= $order['order_id'] ?>'">
+                    <img src="<?= htmlspecialchars($order['image_url']) ?>" alt="<?= htmlspecialchars($order['name']) ?>" class="order-image">
+                    <div class="order-info">
+                        <p><?= htmlspecialchars($order['manufacturer']) ?> <?= htmlspecialchars($order['name']) ?></p>
+                        <p><?= htmlspecialchars($order['size']) ?></p>
+                        <p>Статус: <?= htmlspecialchars($order['application_status']) ?></p>
+                        <p><?= htmlspecialchars($order['price']) ?>₽</p>
+                    </div>
+                    <?php if ($order['quantity'] > 1): ?>
+                        <div class="order-quantity">+<?= $order['quantity'] - 1 ?></div>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach;
+            echo '</div>';
+            ?>
+        <?php else: ?>
+            <p>У вас нет активных заказов</p>
+        <?php endif; ?>
+    </div>
+
+    <div class="cont-block">
+        <div class="favorites" id="favorites" onclick="window.location.href= 'like_items.php'">
+            <i class="fi fi-sr-heart"></i>
+            <p>Избранное</p>
+        </div>
+        <div class="cart" id="cart" onclick="window.location.href= 'cart.php'">
+            <i class="fi fi-sr-shopping-cart"></i>
+            <p>Корзина</p>
+        </div>
+    </div>
+
+    <div id="personal-info">
+        <h2>Персональные данные</h2>
+        <form method="post" action="profile.php" id="personal-info-form">
+            <div class="input-container">
+                <input type="text" id="first_name" name="first_name" value="<?= htmlspecialchars($personalInfo['first_name']) ?>" placeholder="Имя">
+            </div>
+            <div class="input-container">
+                <input type="text" id="last_name" name="last_name" value="<?= htmlspecialchars($personalInfo['last_name']) ?>" placeholder="Фамилия">
+            </div>
+            <div class="input-container">
+                <input type="text" id="phone_number" name="phone_number" value="<?= htmlspecialchars($personalInfo['phone_number']) ?>" placeholder="Телефон">
+            </div>
+            <div class="input-container">
+                <input type="email" id="email" name="email" value="<?= htmlspecialchars($personalInfo['email']) ?>" placeholder="Email">
+            </div>
+            <div class="input-container">
+                <input type="text" id="adres" name="adres" value="<?= htmlspecialchars($personalInfo['adres']) ?>" placeholder="Ваш адрес СДЭК">
+            </div>
+            <button type="submit" id="save-button">Сохранить</button>
+        </form>
+    </div>
+
+    <div class="history" id="history">
+        <h2>История заказов</h2>
+        <?php if (count($orderHistory) > 0): ?>
+            <?php
+            $currentOrderId = null;
+            foreach ($orderHistory as $order):
+                if ($currentOrderId !== $order['order_id']):
+                    if ($currentOrderId !== null):
+                        echo '</div>';
+                    endif;
+                    $currentOrderId = $order['order_id'];
+                    echo '<div class="order-container">';
+                    echo '<h3 class="text-order">Заказ №' . htmlspecialchars($order['order_id']) . '</h3>';
+                endif; ?>
+                <div class="order-item" onclick="window.location.href='order_details.php?id=<?= $order['order_id'] ?>'">
+                    <img src="<?= htmlspecialchars($order['image_url']) ?>" alt="<?= htmlspecialchars($order['name']) ?>" class="order-image">
+                    <div class="order-info">
+                        <p><?= htmlspecialchars($order['manufacturer']) ?> <?= htmlspecialchars($order['name']) ?></p>
+                        <p><?= htmlspecialchars($order['size']) ?></p>
+                        <p>Статус: <?= htmlspecialchars($order['application_status']) ?></p>
+                        <p><?= htmlspecialchars($order['price']) ?>₽</p>
+                    </div>
+                    <?php if ($order['quantity'] > 1): ?>
+                        <div class="order-quantity">+<?= $order['quantity'] - 1 ?></div>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach;
+            echo '</div>';
+            ?>
+        <?php else: ?>
+            <p>У вас нет истории заказов</p>
+        <?php endif; ?>
+    </div>
+</div>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="static/scripts/telegram_back.js"></script>
+<script src="static/scripts/save_for_profile.js"></script>
+</body>
+</html>
+
