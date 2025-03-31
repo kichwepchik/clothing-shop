@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id']) && isset($
     $userName = $_POST['user_name'];
 
     // Получаем токен вашего бота
-    $telegramBotToken = ''; //ПОМЕНЯТЬ!!!!!!!
+    $telegramBotToken = '7129660172:AAFrvM0LleNZyOasj_SH5kDj08jrZ_64nCg'; //ПОМЕНЯТЬ!!!!!!!
 
     // Запрос к Telegram API для получения фотографий профиля пользователя
     $telegramApiUrl = "https://api.telegram.org/bot$telegramBotToken/getUserProfilePhotos?user_id=$userId";
