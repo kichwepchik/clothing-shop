@@ -1,3 +1,27 @@
+<?php
+session_start();
+global $pdo;
+require_once 'static/app/database/connect.php';
+
+$userId = $_SESSION['user_id']; // предположим, что ID пользователя хранится в сессии
+
+try {
+    // Извлечение товаров из корзины для конкретного пользователя
+    $sql = 'SELECT ci.id, p.name, s.size, ci.quantity, p.price, p.image_url, p.manufacturer
+            FROM cart_items ci
+            JOIN products p ON ci.product_id = p.id
+            JOIN sizes s ON ci.size_id = s.id
+            WHERE ci.user_id = :user_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['user_id' => $userId]);
+    $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Ошибка при выполнении запроса: " . $e->getMessage();
+    exit;
+}
+
+$deliveryFee = 500; // фиксированная стоимость доставки
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>

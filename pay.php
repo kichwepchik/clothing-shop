@@ -1,3 +1,126 @@
+<?php
+global $pdo;
+session_start();
+require 'static/app/database/connect.php';
+
+function logToFile($message) {
+    $logFile = 'debug.log';
+    $current = file_get_contents($logFile);
+    $current .= $message . "\n";
+    file_put_contents($logFile, $current);
+}
+
+function redirectToError($message) {
+    logToFile("Redirecting to error: $message");
+    header("Location: error.php?message=" . urlencode($message));
+    exit;
+}
+
+$userId = $_SESSION['user_id']; // предположим, что ID пользователя хранится в сессии
+
+try {
+    // Извлечение товаров из корзины для конкретного пользователя
+    $sql = 'SELECT ci.id, ci.product_id, ci.size_id, ci.color_id, ci.quantity, p.price, p.image_url, p.manufacturer, p.name, s.size
+            FROM cart_items ci
+            JOIN products p ON ci.product_id = p.id
+            JOIN sizes s ON ci.size_id = s.id
+            WHERE ci.user_id = :user_id';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['user_id' => $userId]);
+    $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Ошибка при выполнении запроса: " . $e->getMessage();
+    exit;
+}
+
+$deliveryFee = 500;
+$totalPrice = array_reduce($cartItems, function ($carry, $item) {
+    return $carry + ($item['quantity'] * $item['price']);
+}, 0);
+
+$totalPrice += $deliveryFee;
+
+$personalInfo = [
+    'first_name' => '',
+    'last_name' => '',
+    'phone_number' => '',
+    'email' => '',
+    'adres' => ''
+];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Сохранение персональной информации
+    $firstName = $_POST['first_name'];
+    $lastName = $_POST['last_name'];
+    $phoneNumber = $_POST['phone_number'];
+    $email = $_POST['email'];
+    $adres = $_POST['adres'];
+
+    if ($userId && $firstName && $lastName && $phoneNumber && $email && $adres) {
+        $sql = "SELECT COUNT(*) FROM shipping_info WHERE user_id = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$userId]);
+        $userExists = $stmt->fetchColumn() > 0;
+
+        if ($userExists) {
+            $sql = "UPDATE shipping_info SET first_name = ?, last_name = ?, phone_number = ?, email = ?, adres = ? WHERE user_id = ?";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$firstName, $lastName, $phoneNumber, $email, $adres, $userId]);
+        } else {
+            $sql = "INSERT INTO shipping_info (user_id, first_name, last_name, phone_number, email, adres) VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$userId, $firstName, $lastName, $phoneNumber, $email, $adres]);
+        }
+    }
+
+    // Создание заказа
+    try {
+        $pdo->beginTransaction();
+
+        // Вставка в таблицу orders
+        $sql = "INSERT INTO orders (user_id, total_amount, application_status, status) VALUES (?, ?, 'Ожидает подтверждения', 'Ожидает оплаты')";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$userId, $totalPrice]);
+
+        $orderId = $pdo->lastInsertId();
+
+        // Вставка в таблицу order_items
+        $sql = "INSERT INTO order_items (order_id, product_id, color_id, size_id, quantity, price) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $pdo->prepare($sql);
+
+        foreach ($cartItems as $item) {
+            $stmt->execute([$orderId, $item['product_id'], $item['color_id'], $item['size_id'], $item['quantity'], $item['price']]);
+        }
+
+        // Очистка корзины
+        $sql = "DELETE FROM cart_items WHERE user_id = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$userId]);
+
+        $pdo->commit();
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        redirectToError("Ошибка при создании заказа: " . $e->getMessage());
+    }
+
+    echo "<script>
+        alert('Заявка оформлена');
+        window.location.href = 'profile.php';
+    </script>";
+    exit;
+} else {
+    // Загрузка персональной информации
+    $sql = "SELECT email, first_name, last_name, adres, phone_number FROM shipping_info WHERE user_id = ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$userId]);
+    $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($userData) {
+        $personalInfo = array_merge($personalInfo, $userData);
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>

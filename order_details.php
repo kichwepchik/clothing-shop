@@ -1,3 +1,101 @@
+<?php
+global $pdo;
+session_start();
+require 'static/app/database/connect.php';
+
+function logToFile($message) {
+    $logFile = 'debug.log';
+    $current = file_get_contents($logFile);
+    $current .= $message . "\n";
+    file_put_contents($logFile, $current);
+}
+
+if (!isset($_GET['id'])) {
+    header("Location: error.php?message=" . urlencode("Order ID is missing."));
+    exit;
+}
+
+$orderId = $_GET['id'] ?? null;
+if (!$orderId || !ctype_digit($orderId)) {
+    header("Location: error.php?message=" . urlencode("Invalid Order ID."));
+    exit;
+}
+
+$notifId = $_GET['notif_id'] ?? null;
+if ($notifId && !ctype_digit($notifId)) {
+    header("Location: error.php?message=" . urlencode("Invalid Notification ID."));
+    exit;
+}
+
+$userId = $_SESSION['user_id'] ?? null;
+if (!$userId || !ctype_digit($userId)) {
+    header("Location: error.php?message=" . urlencode("Invalid User ID."));
+    exit;
+}
+
+
+// Обновление статуса уведомления на "прочитано"
+if ($notifId) {
+    $stmt = $pdo->prepare("UPDATE notifications SET `read` = TRUE WHERE id = ? AND telegram_id = ?");
+    $stmt->execute([$notifId, $userId]);
+}
+
+$sql = "SELECT o.id AS order_id, 
+               o.total_amount, 
+               o.application_status, 
+               o.status, 
+               oi.product_id, 
+               s.size, 
+               p.manufacturer, 
+               p.name, 
+               p.image_url, 
+               oi.quantity,
+               p.price
+        FROM orders o
+        JOIN order_items oi ON o.id = oi.order_id
+        JOIN products p ON oi.product_id = p.id
+        JOIN sizes s ON oi.size_id = s.id
+        WHERE o.id = ? AND o.user_id = ?
+        GROUP BY o.id, o.total_amount, o.application_status, o.status, oi.product_id, s.size, p.manufacturer, p.name, p.image_url, oi.quantity";
+$stmt = $pdo->prepare($sql);
+$stmt->execute([$orderId, $userId]);
+$orderDetails = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if (!$orderDetails) {
+    header("Location: error.php?message=" . urlencode("Order not found or you do not have permission to view it."));
+    exit;
+}
+
+$order = $orderDetails[0];
+$totalAmountWithDelivery = $order['total_amount']; // Add delivery cost
+
+// Get delivery status
+$sqlDelivery = "SELECT status FROM order_delivery WHERE order_id = ? AND user_id = ?";
+$stmtDelivery = $pdo->prepare($sqlDelivery);
+$stmtDelivery->execute([$orderId, $userId]);
+$deliveryStatus = $stmtDelivery->fetch(PDO::FETCH_ASSOC);
+
+$deliveryStages = [
+    'В обработке ожидает оплаты' => 'В обработке, ожидает оплаты',
+    'Отправлен на склад' => 'Отправлен на склад',
+    'На складе готов к отправке' => 'На складе, готов к отправке',
+    'Отправлен СДЭК' => 'Отправлен СДЭК',
+    'Получен' => 'Получен покупателем'
+];
+
+$currentStage = isset($deliveryStatus['status']) ? $deliveryStatus['status'] : null;
+
+// Fetch shipping info
+$sqlShipping = "SELECT * FROM shipping_info WHERE user_id = ?";
+$stmtShipping = $pdo->prepare($sqlShipping);
+$stmtShipping->execute([$userId]);
+$shippingInfo = $stmtShipping->fetch(PDO::FETCH_ASSOC);
+
+if (!$shippingInfo) {
+    header("Location: error.php?message=" . urlencode("Shipping info not found."));
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
